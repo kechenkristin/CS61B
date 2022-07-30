@@ -29,7 +29,7 @@ public class IntList {
      * A List with null rest, and first = 0.
      */
     public IntList() {
-    /* NOTE: public IntList () { }  would also work. */
+        /* NOTE: public IntList () { }  would also work. */
         this(0, null);
     }
 
@@ -44,10 +44,10 @@ public class IntList {
         }
     }
 
-    public static IntList dSquareListRecursive(IntList L){
-        if (L == null){
+    public static IntList dSquareListRecursive(IntList L) {
+        if (L == null) {
             return L;
-        }else {
+        } else {
             L.first *= L.first;
             return dSquareListRecursive(L.rest);
         }
@@ -96,7 +96,7 @@ public class IntList {
 
 
         IntList ptra = A;
-        while (ptra.rest != null){
+        while (ptra.rest != null) {
             ptra = ptra.rest;
         }
         ptra.rest = B;
@@ -134,7 +134,7 @@ public class IntList {
         IntList ptr = res;
         A = A.rest;
 
-        while (A != null){
+        while (A != null) {
             ptr.rest = new IntList(A.first, null);
             A = A.rest;
             ptr = ptr.rest;
@@ -142,10 +142,44 @@ public class IntList {
 
         ptr.rest = B;
         return res;
-
-
-
     }
+
+
+
+    /**
+     * Returns the reverse of given IntList.
+     * This method is destructive.
+     * If given null as an input, return null.
+     */
+    public static IntList reverse(IntList A) {
+        if (A == null || A.rest == null) {
+            return A;
+        } else {
+            IntList curr = reverse(A.rest);
+            A.rest.rest = A;
+            A.rest = null;
+            return curr;
+        }
+    }
+
+
+    public static IntList reverseIter(IntList A) {
+        if (A == null) {
+            return A;
+        }
+        IntList tail = null;
+        while (A != null) {
+            IntList temp = A.rest;
+            A.rest = tail;
+            tail = A;
+            A = temp;
+        }
+        return tail;
+    }
+
+
+
+
 
 
 
