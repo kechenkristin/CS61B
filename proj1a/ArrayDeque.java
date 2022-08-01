@@ -3,23 +3,43 @@ import java.util.List;
 
 public class ArrayDeque<T> implements Iterable<T> {
 
-   private  T[] items;
-   private int size;
+    private T[] items;
+    private int size;
 
-   private int length;
+    private int length;
 
-   private int first;
+    private int first;
 
-   private int last;
+    private int last;
 
 
-   public Iterator<T> iterator() {
-       List<T> itemList = List.of(items);
-       return itemList.iterator();
+    public Iterator<T> iterator() {
+        return new DequeIterator<>();
+    }
 
-   }
+    private class DequeIterator<T> implements Iterator<T> {
 
-    /** Creates an empty linked array deque. */
+        private int wizardPosition = 0;
+
+        public DequeIterator() {
+            wizardPosition = 0;
+        }
+
+        public boolean hasNext() {
+            return wizardPosition < size;
+        }
+
+        public T next() {
+            T returnVal = (T) items[wizardPosition];
+            wizardPosition += 1;
+            return returnVal;
+        }
+
+    }
+
+    /**
+     * Creates an empty linked array deque.
+     */
     public ArrayDeque() {
         length = 8;
         items = (T[]) new Object[length];
@@ -28,7 +48,9 @@ public class ArrayDeque<T> implements Iterable<T> {
         last = 5;
     }
 
-    /** Returns true if deque is empty, false otherwise. */
+    /**
+     * Returns true if deque is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return size == 0;
     }
@@ -38,12 +60,14 @@ public class ArrayDeque<T> implements Iterable<T> {
         return size;
     }
 
-    /** Prints the items in the deque from first to last,
-     * separated by a space. */
+    /**
+     * Prints the items in the deque from first to last,
+     * separated by a space.
+     */
     public void printDeque() {
-       for(T i : items) {
-           System.out.print(i + " ");
-       }
+        for (T i : items) {
+            System.out.print(i + " ");
+        }
     }
 
 
@@ -54,8 +78,10 @@ public class ArrayDeque<T> implements Iterable<T> {
 
     }
 
-    /** Adds item of type T to the front of the list. */
-    public void addFirst(T item){
+    /**
+     * Adds item of type T to the front of the list.
+     */
+    public void addFirst(T item) {
         if (size == length) {
             resize(length * 2);
         }
@@ -64,7 +90,9 @@ public class ArrayDeque<T> implements Iterable<T> {
         size += 1;
     }
 
-    /** Adds an item of type T to the back of the deque. */
+    /**
+     * Adds an item of type T to the back of the deque.
+     */
     public void addLast(T item) {
         if (size == length) {
             resize(length * 2);
@@ -74,18 +102,22 @@ public class ArrayDeque<T> implements Iterable<T> {
         size += 1;
     }
 
-    /** Removes and returns the item at the front of the deque.
-     * If no such item exists, returns null. */
+    /**
+     * Removes and returns the item at the front of the deque.
+     * If no such item exists, returns null.
+     */
     public T removeFirst() {
-       size -= 1;
-       T returnItem = items[first];
-       items[first] = null;
-       first = (first + 1) % length;
-       return returnItem;
+        size -= 1;
+        T returnItem = items[first];
+        items[first] = null;
+        first = (first + 1) % length;
+        return returnItem;
     }
 
-    /** Removes and returns the item at the back of the deque.
-     * If no such item exists, returns null. */
+    /**
+     * Removes and returns the item at the back of the deque.
+     * If no such item exists, returns null.
+     */
     public T removeLast() {
         size -= 1;
         T returnItem = items[last];
@@ -94,13 +126,14 @@ public class ArrayDeque<T> implements Iterable<T> {
         return returnItem;
     }
 
-    /** Gets the item at the given index, where 0 is the front,
+    /**
+     * Gets the item at the given index, where 0 is the front,
      * 1 is the next item, and so forth. If no such item exists,
-     * returns null. Must not alter the deque! */
+     * returns null. Must not alter the deque!
+     */
     public T get(int index) {
         return items[index];
     }
-
 
 
 }
