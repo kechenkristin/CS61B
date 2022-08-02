@@ -1,50 +1,21 @@
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Iterable<T> {
+public class ArrayDeque<T> {
 
     private T[] items;
+    private int nextFirst;
+    private int nextLast;
     private int size;
 
-    private int length;
-
-    private int first;
-
-    private int last;
-
-
-    public Iterator<T> iterator() {
-        return new DequeIterator<>();
-    }
-
-    private class DequeIterator<T> implements Iterator<T> {
-
-        private int wizardPosition = 0;
-
-        public DequeIterator() {
-            wizardPosition = 0;
-        }
-
-        public boolean hasNext() {
-            return wizardPosition < size;
-        }
-
-        public T next() {
-            T returnVal = (T) items[wizardPosition];
-            wizardPosition += 1;
-            return returnVal;
-        }
-
-    }
 
     /**
      * Creates an empty linked array deque.
      */
     public ArrayDeque() {
-        length = 8;
-        items = (T[]) new Object[length];
+        items = (T[]) new Object[8];
         size = 0;
-        first = 4;
-        last = 5;
+        nextFirst = 0;
+        nextLast = 1;
     }
 
     /**
@@ -69,23 +40,33 @@ public class ArrayDeque<T> implements Iterable<T> {
         }
     }
 
-
-    private void resize(int capacity) {
-        T[] a = (T[]) new Object[capacity];
-        System.arraycopy(items, 0, a, 0, size);
-        items = a;
-
+    /**
+     * Get the previous index. left
+     */
+    private int minusOne(int index) {
+        return Math.floorMod(index - 1, items.length);
     }
+
+    /**
+     * Get the next index. right
+     */
+    private int plusOne(int index) {
+        return Math.floorMod(index + 1, items.length);
+    }
+
+    /** Plusone for resize. */
+    private int plusOne(int index, int length) {
+        return Math.floorMod(index + 1, length);
+    }
+
 
     /**
      * Adds item of type T to the front of the list.
      */
     public void addFirst(T item) {
-        if (size == length) {
-            resize(length * 2);
-        }
-        items[first] = item;
-        first = (first - 1) % length;
+        resize();
+        items[nextFirst] = item;
+        nextFirst = minusOne(nextFirst);
         size += 1;
     }
 
@@ -93,12 +74,24 @@ public class ArrayDeque<T> implements Iterable<T> {
      * Adds an item of type T to the back of the deque.
      */
     public void addLast(T item) {
-        if (size == length) {
-            resize(length * 2);
-        }
-        items[last] = item;
-        last = (last + 1) % length;
+        resize();
+        items[nextLast] = item;
+        nextLast = plusOne(nextLast);
         size += 1;
+    }
+
+    /**
+     * get the first item.
+     */
+    private T getFirst() {
+        return items[plusOne(nextFirst)];
+    }
+
+    /**
+     * get the last item.
+     */
+    private T getLast() {
+        return items[minusOne(nextLast)];
     }
 
     /**
@@ -106,11 +99,12 @@ public class ArrayDeque<T> implements Iterable<T> {
      * If no such item exists, returns null.
      */
     public T removeFirst() {
+        resize();
+        T removedItem = getFirst();
+        nextFirst = plusOne(nextFirst);
+        items[nextFirst] = null;
         size -= 1;
-        T returnItem = items[first];
-        items[first] = null;
-        first = (first + 1) % length;
-        return returnItem;
+        return removedItem;
     }
 
     /**
@@ -118,11 +112,12 @@ public class ArrayDeque<T> implements Iterable<T> {
      * If no such item exists, returns null.
      */
     public T removeLast() {
+        resize();
+        T removedItem = getLast();
+        nextLast = minusOne(nextLast);
+        items[nextLast] = null;
         size -= 1;
-        T returnItem = items[last];
-        items[last] = null;
-        last = (last - 1) % length;
-        return returnItem;
+        return removedItem;
     }
 
     /**
@@ -133,6 +128,42 @@ public class ArrayDeque<T> implements Iterable<T> {
     public T get(int index) {
         return items[index];
     }
+
+    private void resize() {
+        if (size == items.length) {
+            expand();
+        }
+        if (size < items.length * 0.25) {
+            reduce();
+        }
+    }
+
+    private void expand() {
+        resizeHelper(items.length * 2);
+    }
+
+    private void reduce() {
+        resizeHelper(items.length / 2);
+    }
+
+    private void resizeHelper(int newLength) {
+        T[] temp = items;
+        int start = plusOne(nextFirst);
+        int end = minusOne(nextLast);
+
+        items = (T[]) new Object[newLength];
+        nextFirst = 0;
+        nextLast = 1;
+
+        for(int i = start; i != end; i = plusOne(i,temp.length)) {
+            items[nextLast] = temp[i];
+            nextLast = plusOne(nextLast, newLength);
+        }
+
+        items[nextLast] = temp[end];
+        nextLast = plusOne(nextLast, newLength);
+    }
+
 
 
 }
