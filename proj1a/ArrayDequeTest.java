@@ -29,7 +29,6 @@ public class ArrayDequeTest {
 
     public static void addIsEmptySizeTest() {
         System.out.println("Running add/isEmpty/Size test.");
-        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
         ArrayDeque<String> ad1 = new ArrayDeque<>();
 
@@ -62,7 +61,6 @@ public class ArrayDequeTest {
 
         System.out.println("Running add/remove test.");
 
-        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
         ArrayDeque<Integer> lld1 = new ArrayDeque<>();
         // should be empty

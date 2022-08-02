@@ -2,9 +2,9 @@
 public class LinkedListDeque<T> {
 
     private static class TNode<T> {
-        public T item;
-        public TNode prev;
-        public TNode next;
+        private T item;
+        private TNode prev;
+        private TNode next;
 
         public TNode() {
         }
