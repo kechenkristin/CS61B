@@ -38,6 +38,7 @@ public class ArrayDeque<T> {
         for (T i : items) {
             System.out.print(i + " ");
         }
+        System.out.println();
     }
 
     /**
@@ -54,9 +55,26 @@ public class ArrayDeque<T> {
         return Math.floorMod(index + 1, items.length);
     }
 
-    /** Plusone for resize. */
+    /**
+     * Plusone for resize.
+     */
     private int plusOne(int index, int length) {
         return Math.floorMod(index + 1, length);
+    }
+
+
+    /**
+     * get the first item.
+     */
+    private T getFirst() {
+        return items[plusOne(nextFirst)];
+    }
+
+    /**
+     * get the last item.
+     */
+    private T getLast() {
+        return items[minusOne(nextLast)];
     }
 
 
@@ -80,19 +98,6 @@ public class ArrayDeque<T> {
         size += 1;
     }
 
-    /**
-     * get the first item.
-     */
-    private T getFirst() {
-        return items[plusOne(nextFirst)];
-    }
-
-    /**
-     * get the last item.
-     */
-    private T getLast() {
-        return items[minusOne(nextLast)];
-    }
 
     /**
      * Removes and returns the item at the front of the deque.
@@ -120,20 +125,12 @@ public class ArrayDeque<T> {
         return removedItem;
     }
 
-    /**
-     * Gets the item at the given index, where 0 is the front,
-     * 1 is the next item, and so forth. If no such item exists,
-     * returns null. Must not alter the deque!
-     */
-    public T get(int index) {
-        return items[index];
-    }
 
     private void resize() {
         if (size == items.length) {
             expand();
         }
-        if (size < items.length * 0.25) {
+        if (size < items.length * 0.25 && items.length > 8) {
             reduce();
         }
     }
@@ -155,7 +152,7 @@ public class ArrayDeque<T> {
         nextFirst = 0;
         nextLast = 1;
 
-        for(int i = start; i != end; i = plusOne(i,temp.length)) {
+        for (int i = start; i != end; i = plusOne(i, temp.length)) {
             items[nextLast] = temp[i];
             nextLast = plusOne(nextLast, newLength);
         }
@@ -164,6 +161,17 @@ public class ArrayDeque<T> {
         nextLast = plusOne(nextLast, newLength);
     }
 
-
+    /**
+     * Gets the item at the given index, where 0 is the front,
+     * 1 is the next item, and so forth. If no such item exists,
+     * returns null. Must not alter the deque!
+     */
+    public T get(int index) {
+        if (index < 0 || index >= size || isEmpty()) {
+            return null;
+        }
+        index = Math.floorMod(plusOne(nextFirst) + index, items.length);
+        return items[index];
+    }
 
 }
