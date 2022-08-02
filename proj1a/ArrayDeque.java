@@ -104,6 +104,9 @@ public class ArrayDeque<T> {
      * If no such item exists, returns null.
      */
     public T removeFirst() {
+        if (isEmpty()) {
+            return null;
+        }
         resize();
         T removedItem = getFirst();
         nextFirst = plusOne(nextFirst);
@@ -117,6 +120,9 @@ public class ArrayDeque<T> {
      * If no such item exists, returns null.
      */
     public T removeLast() {
+        if (isEmpty()) {
+            return null;
+        }
         resize();
         T removedItem = getLast();
         nextLast = minusOne(nextLast);
