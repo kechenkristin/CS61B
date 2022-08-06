@@ -1,5 +1,5 @@
 
-public class LinkedListDeque<T> implements Deque<T>{
+public class LinkedListDeque<T> implements Deque<T> {
 
     private static class TNode<T> {
         private T item;
@@ -49,7 +49,6 @@ public class LinkedListDeque<T> implements Deque<T>{
     }
 
     /* Returns the number of items in the deque. */
-    @Override
     public int size() {
         return size;
     }
