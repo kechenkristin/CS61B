@@ -34,7 +34,8 @@ public class Palindrome {
         return isPHelper(d.removeFirst(), d.removeLast(), d, cc);
     }
 
-    private boolean isPHelper(Character front, Character end, Deque<Character> deque, CharacterComparator cc) {
+    private boolean isPHelper(Character front, Character end,
+                              Deque<Character> deque, CharacterComparator cc) {
         if (front == null || end == null) {
             return true;
         }
