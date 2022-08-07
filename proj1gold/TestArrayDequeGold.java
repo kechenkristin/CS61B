@@ -33,28 +33,27 @@ public class TestArrayDequeGold {
                 int randomNum = StdRandom.uniform(4);
 
                 switch (randomNum) {
-                    case 0 -> {
+                    case 0:
                         log += "addFirst(" + addNum + ")\n";
                         studentArray.addFirst(addNum);
                         arraySolution.addFirst(addNum);
-                    }
-                    case 1 -> {
+
+                    case 1:
                         log += "addLast(" + addNum + ")\n";
                         studentArray.addLast(addNum);
                         arraySolution.addLast(addNum);
-                    }
-                    case 2 -> {
+
+                    case 2:
                         log += "removeFirst()\n";
                         removeStudent = studentArray.removeFirst();
                         removeSolution = arraySolution.removeFirst();
-                    }
-                    case 3 -> {
+
+                    case 3:
                         log += "removeLast()\n";
                         removeStudent = studentArray.removeLast();
                         removeSolution = studentArray.removeLast();
-                    }
-                    default -> {
-                    }
+
+                    default:
                 }
                 assertEquals(log, removeStudent, removeSolution);
             }
