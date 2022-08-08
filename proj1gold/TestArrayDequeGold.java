@@ -37,22 +37,22 @@ public class TestArrayDequeGold {
                         log += "addFirst(" + addNum + ")\n";
                         studentArray.addFirst(addNum);
                         arraySolution.addFirst(addNum);
-
+                        break;
                     case 1:
                         log += "addLast(" + addNum + ")\n";
                         studentArray.addLast(addNum);
                         arraySolution.addLast(addNum);
-
+                        break;
                     case 2:
                         log += "removeFirst()\n";
                         removeStudent = studentArray.removeFirst();
                         removeSolution = arraySolution.removeFirst();
-
+                        break;
                     case 3:
                         log += "removeLast()\n";
                         removeStudent = studentArray.removeLast();
                         removeSolution = studentArray.removeLast();
-
+                        break;
                     default:
                 }
                 assertEquals(log, removeStudent, removeSolution);
