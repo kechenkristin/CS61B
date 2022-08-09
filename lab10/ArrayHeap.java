@@ -1,4 +1,7 @@
 import org.junit.Test;
+
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -108,6 +111,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private void swim(int index) {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
+        if (index == 1) {
+            return;
+        }
         while (index > 1 && smaller(index)) {
             swap(parentIndex(index), index);
             index /= 2;
@@ -127,6 +133,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * Bubbles down the node currently at the given index.
      */
     private void sink(int index) {
+        if (!inBounds(index)) {
+            return;
+        }
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
         while (index < size() && greater(index)) {
@@ -157,6 +166,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T peek() {
+        if (size() == 0) {
+            throw new NoSuchElementException("heap is empty!");
+        }
         return contents[1].myItem;
     }
 
@@ -198,26 +210,21 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
-        int index = 0;
-        for (int i = 0; i < size; i++) {
+        int i;
+        for (i = 1; i < size; i++) {
             if (contents[i].myItem.equals(item)) {
-                index = i;
-                contents[i].myPriority = priority;
                 break;
             }
         }
 
-        if(index == size + 1) {
-            return;
+        if(i == size + 1) {
+            throw new IllegalArgumentException("no such item in the heap!");
         }
 
-        if (smaller(index)) {
-            swim(index);
-        } else {
-            if (greater(index)) {
-                sink(index);
-            }
-        }
+        contents[i].myPriority = priority;
+        swim(i);
+        sink(i);
+        return;
     }
 
     /**
