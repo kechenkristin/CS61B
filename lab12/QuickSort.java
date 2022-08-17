@@ -75,16 +75,13 @@ public class QuickSort {
             Queue<Item> equal = new Queue<>();
             Queue<Item> greater = new Queue<>();
             partition(items, pivot, less, equal, greater);
-            if (!less.isEmpty()) {
-                less = quickSort(less);
+            if (less.isEmpty() && greater.isEmpty()) {
+                return equal;
             }
-            if (!greater.isEmpty()) {
-                greater = quickSort(greater);
-            }
-            return catenate(catenate(less, equal), greater);
+            return catenate(catenate(quickSort(less), equal), quickSort(greater));
         }
-
     }
+
 
     public static void main(String[] args) {
         Queue<Integer> num = new Queue<>();
