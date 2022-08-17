@@ -222,4 +222,15 @@ public class Board implements WorldState {
         return s.toString();
     }
 
+    @Override
+    public int hashCode() {
+        int result = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                result = result * 31 + tileAt(i, j);
+            }
+        }
+        return result;
+    }
+
 }
