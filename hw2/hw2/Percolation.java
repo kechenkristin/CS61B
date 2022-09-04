@@ -66,20 +66,19 @@ public class Percolation {
         if (inValidArguments(row, col)) {
             throw new IndexOutOfBoundsException();
         }
-        int site = xyTo1D(row, col);
         if (!isOpen(row, col)) {
+            int site = xyTo1D(row, col);
             openSet[site] = true;
+            opens += 1;
+            if (row == 0) {
+                fullSet.union(site, N * N);
+                percolation.union(site, N * N);
+            }
+            if (row == N - 1) {
+                percolation.union(site, N * N + 1);
+            }
+            joinAround(row, col);
         }
-
-        if (row == 0) {
-            fullSet.union(site, N * N);
-            percolation.union(site, N * N);
-        }
-
-        if (row == N - 1) {
-            percolation.union(site, N * N + 1);
-        }
-        joinAround(row, col);
     }
 
     /**
@@ -117,5 +116,7 @@ public class Percolation {
         return percolation.connected(N * N, N * N + 1);
     }
 
-
+    // used for unit testing
+    public static void main(String[] args) {
+    }
 }
