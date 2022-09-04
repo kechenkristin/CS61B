@@ -4,11 +4,13 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.lang.IndexOutOfBoundsException;
 import java.lang.IllegalArgumentException;
+import java.util.Arrays;
 
 public class Percolation {
 
     // fields
-    private WeightedQuickUnionUF grid;
+    private WeightedQuickUnionUF fullSet;
+    private WeightedQuickUnionUF percolation;
     private int opens;
     private int N;
     private boolean[] openSet;
@@ -21,9 +23,11 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         this.N = N;
-        grid = new WeightedQuickUnionUF(N * N);
+        fullSet = new WeightedQuickUnionUF(N * N + 1);
+        percolation = new WeightedQuickUnionUF(N * N + 2);
         opens = 0;
         openSet = new boolean[N * N];
+        Arrays.fill(openSet, false);
     }
 
     private int xyTo1D(int x, int y) {
@@ -39,16 +43,20 @@ public class Percolation {
 
     private void joinAround(int row, int col) {
         if (row - 1 >= 0 && isOpen(row - 1, col)) {
-            grid.connected(xyTo1D(row, col), xyTo1D(row - 1, col));
+            fullSet.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            percolation.union(xyTo1D(row, col), xyTo1D(row - 1, col));
         }
         if (row + 1 < N && isOpen(row + 1, col)) {
-            grid.connected(xyTo1D(row, col), xyTo1D(row + 1, col));
+            fullSet.union(xyTo1D(row, col), xyTo1D(row + 1, col));
+            percolation.union(xyTo1D(row, col), xyTo1D(row + 1, col));
         }
         if (col - 1 >= 0 && isOpen(row, col - 1)) {
-            grid.connected(xyTo1D(row, col), xyTo1D(row, col - 1));
+            fullSet.union(xyTo1D(row, col), xyTo1D(row, col - 1));
+            percolation.union(xyTo1D(row, col), xyTo1D(row, col - 1));
         }
         if (col + 1 < N && isOpen(row, col + 1)) {
-            grid.connected(xyTo1D(row, col), xyTo1D(row, col + 1));
+            fullSet.union(xyTo1D(row, col), xyTo1D(row, col + 1));
+            percolation.union(xyTo1D(row, col), xyTo1D(row, col + 1));
         }
     }
 
@@ -58,10 +66,20 @@ public class Percolation {
         if (inValidArguments(row, col)) {
             throw new IndexOutOfBoundsException();
         }
+        int site = xyTo1D(row, col);
         if (!isOpen(row, col)) {
-            int site = xyTo1D(row, col);
             openSet[site] = true;
         }
+
+        if (row == 0) {
+            fullSet.union(site, N * N);
+            percolation.union(site, N * N);
+        }
+
+        if (row == N - 1) {
+            percolation.union(site, N * N + 1);
+        }
+        joinAround(row, col);
     }
 
     /**
@@ -81,7 +99,8 @@ public class Percolation {
         if (inValidArguments(row, col)) {
             throw new IndexOutOfBoundsException();
         }
-        return true;
+        int site = xyTo1D(row, col);
+        return fullSet.connected(site, N * N);
     }
 
     /**
@@ -94,13 +113,9 @@ public class Percolation {
     /**
      * does the system percolate?
      */
-    public boolean percolates()
-
-
-    /**
-     * use for unit testing (not required)
-     */
-    public static void main(String[] args)
+    public boolean percolates() {
+        return percolation.connected(N * N, N * N + 1);
+    }
 
 
 }
