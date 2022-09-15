@@ -4,12 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -285,7 +280,7 @@ public class MapServer {
      * cleaned <code>prefix</code>.
      */
     public static List<String> getLocationsByPrefix(String prefix) {
-        return new LinkedList<>();
+        return graph.keysWithPrefixOf(prefix);
     }
 
     /**
@@ -301,7 +296,19 @@ public class MapServer {
      * "id" : Number, The id of the node. <br>
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
-        return new LinkedList<>();
+        List<Map<String, Object>> ret = new LinkedList<>();
+        ArrayList<Long> nameIds = graph.getNodeIdsByName(locationName);
+
+        for (Long id: nameIds) {
+            GraphDB.Node node = graph.nodes.get(id);
+            Map<String, Object> json = new HashMap<>();
+            json.put("lat", node.getLat());
+            json.put("lon", node.getLon());
+            json.put("name", node.getName());
+            json.put("id", id);
+            ret.add(json);
+        }
+        return ret;
     }
 
     /**

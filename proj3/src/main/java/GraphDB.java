@@ -6,10 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -31,6 +28,8 @@ public class GraphDB {
     public Map<String, ArrayList<Long>> names = new HashMap<>();
     public Map<Long, ArrayList<Edge>> adjEdge = new HashMap<>();
     public Map<Long, Node> locations = new HashMap<>();
+
+    public Tries<Long> tires = new Tries<>();
 
     public static class Node {
         private final Long id;
@@ -54,6 +53,10 @@ public class GraphDB {
 
         public double getLat() {
             return lat;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 
@@ -118,6 +121,8 @@ public class GraphDB {
 
         nodes.get(id).name = name;
         locations.get(id).name = name;
+
+        tires.put(pureName, id);
     }
 
     public void addWay(ArrayList<Long> wayNodes, String name) {
@@ -301,6 +306,34 @@ public class GraphDB {
     double lat(long v) {
         validateVertex(v);
         return nodes.get(v).getLat();
+    }
+
+
+    /**
+     * get a list of node ids correspond to the locationName
+     */
+    ArrayList<Long> getNodeIdsByName(String locationName) {
+        return names.get(cleanString(locationName));
+    }
+
+
+
+    /**
+     *  transfers pure name into real name
+     */
+    List<String> getRealNames(List<String> pureNames) {
+        List<String> ret = new ArrayList<>();
+        for (String pureName : pureNames) {
+            ArrayList<Long> ids = names.get(pureName);
+            for (Long id : ids) {
+                ret.add(locations.get(id).getName());
+            }
+        }
+        return ret;
+    }
+
+    List<String> keysWithPrefixOf(String prefix) {
+        return getRealNames(tires.keysWithPrefix(prefix));
     }
 
 

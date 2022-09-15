@@ -116,6 +116,47 @@ public class Router {
         return findPath();
     }
 
+
+    /**
+     * return a list of edges of the routes
+     */
+    private static List<GraphDB.Edge> getEdges(List<Long> routes) {
+        List<GraphDB.Edge> edges = new ArrayList<>();
+        for (int i = 1; i < routes.size(); i++) {
+            Long pre = routes.get(i - 1);
+            Long cur = routes.get(i);
+
+            for (GraphDB.Edge edge : graph.adjEdge.get(pre)) {
+                if (edge.other(pre).equals(cur)) {
+                    edges.add(edge);
+                }
+            }
+        }
+        return edges;
+    }
+
+    private static int relativeBearing(double preBearing, double curBearing) {
+        double reBear = curBearing - preBearing;
+        double abBear = Math.abs(preBearing - curBearing);
+
+        if (abBear > 180) {
+            abBear = 360 - abBear;
+            reBear *= -1;
+        }
+
+        if (abBear <= 15) {
+            return NavigationDirection.STRAIGHT;
+        }
+        if (abBear <= 30) {
+            return reBear < 0 ? NavigationDirection.SLIGHT_LEFT : NavigationDirection.SLIGHT_RIGHT;
+        }
+        if (abBear <= 100) {
+            return reBear < 0 ? NavigationDirection.LEFT : NavigationDirection.RIGHT;
+        } else {
+            return reBear < 0 ? NavigationDirection.SHARP_LEFT : NavigationDirection.SHARP_RIGHT;
+        }
+    }
+
     /**
      * Create the list of directions corresponding to a route on the graph.
      *
@@ -126,7 +167,49 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        graph = g;
+        List<GraphDB.Edge> edges = getEdges(route);
+        int relativeDirection = NavigationDirection.START;
+        double distance = 0;
+        List<NavigationDirection> ret = new ArrayList<>();
+
+        if (edges.size() == 1) {
+            NavigationDirection nav = new NavigationDirection(NavigationDirection.START,
+                    edges.get(0).getName(), edges.get(0).getWeight());
+            ret.add(nav);
+            return ret;
+        }
+
+        for (int i = 1; i < edges.size(); i++) {
+            GraphDB.Edge preEdge = edges.get(i - 1);
+            GraphDB.Edge curEdge = edges.get(i);
+
+            String preEdgeName = preEdge.getName();
+            String curEdgeName = curEdge.getName();
+
+            distance += preEdge.getWeight();
+
+            if (!preEdgeName.equals(curEdgeName)) {
+                Long preNode = route.get(i - 1);
+                Long curNode = route.get(i);
+                Long nextNode = route.get(i + 1);
+
+                double preBear = g.bearing(preNode, curNode);
+                double curBear = g.bearing(curNode, nextNode);
+                NavigationDirection nav = new NavigationDirection(relativeDirection, preEdgeName, distance);
+                ret.add(nav);
+
+                distance = 0;
+                relativeDirection = relativeBearing(preBear, curBear);
+            }
+
+            if (i == edges.size() - 1) {
+                distance += curEdge.getWeight();
+                NavigationDirection nav = new NavigationDirection(relativeDirection, curEdgeName, distance);
+                ret.add(nav);
+            }
+        }
+        return ret;
     }
 
 
@@ -197,6 +280,12 @@ public class Router {
             this.distance = 0.0;
         }
 
+        public NavigationDirection(int direction, String way, double distance) {
+            this.direction = direction;
+            this.way = way;
+            this.distance = distance;
+        }
+
         public String toString() {
             return String.format("%s on %s and continue for %.3f miles.",
                     DIRECTIONS[direction], way, distance);
@@ -249,6 +338,7 @@ public class Router {
             }
         }
 
+
         @Override
         public boolean equals(Object o) {
             if (o instanceof NavigationDirection) {
@@ -264,4 +354,6 @@ public class Router {
             return Objects.hash(direction, way, distance);
         }
     }
+
+
 }
