@@ -28,7 +28,6 @@ public class GraphDB {
     public Map<String, ArrayList<Long>> names = new HashMap<>();
     public Map<Long, ArrayList<Edge>> adjEdge = new HashMap<>();
     public Map<Long, Node> locations = new HashMap<>();
-
     public Tries<Long> tires = new Tries<>();
 
     public static class Node {

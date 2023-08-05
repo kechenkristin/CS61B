@@ -42,6 +42,7 @@ public class Rasterer {
 
 
     private void getImage() {
+        // the width of per picture
         double lonDPP = Math.abs(MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / Math.pow(2.0, depth);
         double latDPP = Math.abs(MapServer.ROOT_LRLAT - MapServer.ROOT_ULLAT) / Math.pow(2.0, depth);
 

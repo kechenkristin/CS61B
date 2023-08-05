@@ -1,14 +1,16 @@
 package lab11.graphs;
 
 /**
- *  @author Josh Hug
+ * @author Josh Hug
  */
 public class MazeDepthFirstPaths extends MazeExplorer {
+
     /* Inherits public fields:
     public int[] distTo;
     public int[] edgeTo;
     public boolean[] marked;
     */
+
     private int s;
     private int t;
     private boolean targetFound = false;
@@ -25,6 +27,8 @@ public class MazeDepthFirstPaths extends MazeExplorer {
     }
 
     private void dfs(int v) {
+        System.out.println(v);
+        System.out.println("("+maze.toX(v) + "," + maze.toY(v)+")");
         marked[v] = true;
         announce();
 
@@ -42,6 +46,7 @@ public class MazeDepthFirstPaths extends MazeExplorer {
                 announce();
                 distTo[w] = distTo[v] + 1;
                 dfs(w);
+                // System.out.println(w);
                 if (targetFound) {
                     return;
                 }

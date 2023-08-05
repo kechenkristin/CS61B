@@ -300,7 +300,7 @@ public class MapServer {
         ArrayList<Long> nameIds = graph.getNodeIdsByName(locationName);
 
         for (Long id: nameIds) {
-            GraphDB.Node node = graph.nodes.get(id);
+            GraphDB.Node node = graph.locations.get(id);
             Map<String, Object> json = new HashMap<>();
             json.put("lat", node.getLat());
             json.put("lon", node.getLon());
@@ -308,6 +308,7 @@ public class MapServer {
             json.put("id", id);
             ret.add(json);
         }
+
         return ret;
     }
 

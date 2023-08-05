@@ -92,7 +92,6 @@ public class GraphBuildingHandler extends DefaultHandler {
             wayNodes = new ArrayList<>();
             validWay = false;
             wayId = Long.parseLong(attributes.getValue("id"));
-
         } else if (activeState.equals("way") && qName.equals("nd")) {
             /* While looking at a way, we found a <nd...> tag. */
             //System.out.println("Id of a node in this way: " + attributes.getValue("ref"));

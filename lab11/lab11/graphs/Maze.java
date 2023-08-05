@@ -454,7 +454,7 @@ public class Maze implements Observer {
 
 
     // a test client
-   /* public static void main(String[] args) {
+   public static void main(String[] args) {
         int N = Integer.parseInt(args[0]);
         int rseed = Integer.parseInt(args[1]);
 
@@ -464,7 +464,7 @@ public class Maze implements Observer {
 //        MazeExplorer mdfp = new MazeAStarPath(maze, 4, 4, N, N);
         MazeExplorer mdfp = new MazeCycles(maze);
         mdfp.solve();
-    }*/
+    }
 
 
     private int N;                 // dimension of maze
@@ -473,6 +473,6 @@ public class Maze implements Observer {
     private boolean[][] south;
     private boolean[][] west;
     private static Random rgen;
-    private static int DRAW_DELAY_MS = 50;
+    private static int DRAW_DELAY_MS = 5000;
 }
 
